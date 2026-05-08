@@ -6,9 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CompanyOrmEntity } from './persistence/postgres/entities/company.orm.entity';
 import { JobOpportunityOrmEntity } from './persistence/postgres/entities/job-opportunity.orm.entity';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
+    CqrsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

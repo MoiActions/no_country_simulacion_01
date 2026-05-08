@@ -10,7 +10,6 @@ import {
 import { Paginated } from 'src/modules/company-marketplace/core/shared/helpers/paginated.helper';
 import { JobOpportunityDTO } from 'src/modules/company-marketplace/core/entities/job-opportunity/dto/JobOpportunity.dto';
 import { JobUseCasesProvider } from 'src/modules/company-marketplace/core/use-cases/JobsUseCases';
-import { GetJobsDTO } from 'src/modules/company-marketplace/core/entities/job-opportunity/dto/GetJobs.dto';
 import { JOB_USE_CASES } from 'src/modules/company-marketplace/shared/constants';
 import { CreateJobOpportunityDTO } from 'src/modules/company-marketplace/core/entities/job-opportunity/dto/CreateJobOpportunity.dto';
 
@@ -40,14 +39,15 @@ export class JobController {
 
   @Get()
   async getJobs(
-    @Query() getJobsRequest: GetJobsDTO,
+    @Query('page') page: number = 1,
+    @Query('size') size: number = 10,
   ): Promise<Paginated<JobOpportunityDTO>> {
     try {
-      return this.jobUseCases.getJobs(getJobsRequest);
+      return this.jobUseCases.getJobs({ page, size });
     } catch (error) {
       console.error(error);
       throw new InternalServerErrorException(
-        'Failed to fetch job opportunities: ' + error.message,
+        'Failed to fetch job opportunities: ',
       );
     }
   }

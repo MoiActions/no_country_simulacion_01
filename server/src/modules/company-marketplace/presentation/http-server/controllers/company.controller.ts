@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Inject,
   InternalServerErrorException,
   Post,
   Query,
@@ -10,22 +9,25 @@ import {
 import { CompanyDTO } from 'src/modules/company-marketplace/core/entities/company/dto/Company.dto';
 import { Paginated } from 'src/modules/company-marketplace/core/shared/helpers/paginated.helper';
 import { CreateCompanyDTO } from 'src/modules/company-marketplace/core/entities/company/dto/CreateCompany.dto';
-import { CompanyUseCasesProvider } from 'src/modules/company-marketplace/core/use-cases/CompanyUseCases';
-import { GetCompaniesDTO } from 'src/modules/company-marketplace/core/entities/company/dto/GetCompanies.dto';
-import { COMPANY_USE_CASES } from 'src/modules/company-marketplace/shared/constants';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateCompanyCommand } from 'src/modules/company-marketplace/core/use-cases/entrypoint/commands/company/create-company/CreateCompany.command';
+import { GetCompaniesQuery } from 'src/modules/company-marketplace/core/use-cases/entrypoint/queries/company/get-companies/GetCompany.query';
 
 @Controller('company')
 export class CompanyController {
   constructor(
-    @Inject(COMPANY_USE_CASES) private companyUseCases: CompanyUseCasesProvider,
+    private commandBus: CommandBus,
+    private queryBus: QueryBus,
   ) {}
 
-  @Post()
+  @Post('create')
   async createCompany(
     @Body() companyData: CreateCompanyDTO,
   ): Promise<CreateCompanyDTO> {
     try {
-      const result = await this.companyUseCases.createCompany(companyData);
+      const result = await this.commandBus.execute(
+        new CreateCompanyCommand(companyData),
+      );
       return result;
     } catch (error) {
       console.error(error);
@@ -33,14 +35,18 @@ export class CompanyController {
     }
   }
 
-  @Get()
+  @Get('list')
   async getCompanies(
-    @Query() getCompanies: GetCompaniesDTO,
+    @Query('page') page: number = 1,
+    @Query('size') size: number = 10,
   ): Promise<Paginated<CompanyDTO>> {
     try {
-      const result = await this.companyUseCases.getCompanies(getCompanies);
+      const result = await this.queryBus.execute(
+        new GetCompaniesQuery(page, size),
+      );
       return result;
     } catch (error) {
+      console.error(error);
       throw new InternalServerErrorException('Failed to get companies');
     }
   }
