@@ -39,10 +39,7 @@ export class JobsUseCases {
     const size = Number(getJobsRequest.size) || 10;
     const safePage = Math.max(1, page);
     const offset = (safePage - 1) * size;
-    const allJobs = await this.jobOpportunityRepository.find(
-      size,
-      offset,
-    );
+    const allJobs = await this.jobOpportunityRepository.find(size, offset);
     const paginatedJobs = Paginated.create<JobOpportunityDTO>({
       data: allJobs,
       page: safePage,

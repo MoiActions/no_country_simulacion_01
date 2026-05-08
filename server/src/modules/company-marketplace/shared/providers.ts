@@ -3,8 +3,8 @@ import { CompanyRepository } from '../core/data/CompanyRepository';
 import { JobOpportunityRepository } from '../core/data/JobOpportunityRepository';
 import { CompanyUseCases } from '../core/use-cases/CompanyUseCases';
 import { JobsUseCases } from '../core/use-cases/JobsUseCases';
-import { StubCompanyRepository } from '../persistence/StubCompanyRepository';
-import { StubJobOpportunityRepository } from '../persistence/StubJobOpportunityRepository';
+import { PostgresCompanyRepository } from '../persistence/postgres/repositories/postgres.company.repository';
+import { PostgresJobOpportunityRepository } from '../persistence/postgres/repositories/postgres.job-opportunity.repository';
 import {
   COMPANY_REPOSITORY,
   COMPANY_USE_CASES,
@@ -14,12 +14,12 @@ import {
 
 const CompanyRepositoryCustomProvider = {
   provide: COMPANY_REPOSITORY,
-  useClass: StubCompanyRepository,
+  useClass: PostgresCompanyRepository,
 };
 
 const JobOpportunityRepositoryCustomProvider = {
   provide: JOB_OPPORTUNITY_REPOSITORY,
-  useClass: StubJobOpportunityRepository,
+  useClass: PostgresJobOpportunityRepository,
 };
 
 const CompanyUseCasesProviderCustomProvider = {

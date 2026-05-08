@@ -31,7 +31,7 @@ export class JobController {
         );
       return result;
     } catch (error) {
-        console.error(error);
+      console.error(error);
       throw new InternalServerErrorException(
         'Failed to create job opportunity',
       );
