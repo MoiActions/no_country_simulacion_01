@@ -1,5 +1,6 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { OpportunityStatus } from '../../../core/entities/job-opportunity/OpportunityStatus';
+import { CompanyOrmEntity } from './company.orm.entity';
 
 @Entity('job_opportunities')
 export class JobOpportunityOrmEntity {
@@ -8,6 +9,10 @@ export class JobOpportunityOrmEntity {
 
   @Column({ name: 'company_id' })
   companyId!: string;
+
+  @ManyToOne(() => CompanyOrmEntity)
+  @JoinColumn({ name: 'company_id' })
+  company: CompanyOrmEntity;
 
   @Column({ name: 'title' })
   title!: string;
